@@ -1,9 +1,12 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ProtectedRoute from './Components/Routes/ProtectedRoutes';
-import PublicRoute from './Components/Routes/PublicRoutes';
 
-// Pages
+import ProtectedMiddleware from './Components/MiddleWare/ProtectedMiddleware';
+import PublicMiddleware from './Components/MiddleWare/PublicMiddleware';
+import AdminMiddleware from './Components/MiddleWare/AdminMiddleware';
+
+// Layouts
+import AdminLayout from './Pages/Admin/AdminLayout';
+import UserLayout from './Pages/User/UserLayout';
 
 // Admin Auth Pages
 import AdminLogIn from './Pages/Admin/Auth/AdminLogIn';
@@ -19,84 +22,84 @@ import ResetPassword from './Pages/User/Auth/ResetPassword';
 
 // Admin Protected Pages
 import AdminDashboard from './Pages/Admin/AdminDashboard';
-import AdminApproval from './Pages/Admin/AdminApproval';
+import AdminUsers from './Pages/Admin/AdminUsers';
+import AdminSubscriptions from './Pages/Admin/AdminSubscriptions';
+import AdminPosts from './Pages/Admin/AdminPosts';
+import AdminSettings from './Pages/Admin/AdminSettings';
 
 // User Protected Pages
 import Home from './Pages/User/Home';
-import UserSubscription from './Pages/User/Subscription';
+import UserSubscription from './Pages/User/UserSubscription';
+import UserProfile from './Pages/User/UserProfile';
+import UserPosts from './Pages/User/UserPosts';
 
 function App() {
+  // Public routes
+  const publicRoutes = [
+    { path: '/admin/auth/login', element: <AdminLogIn /> },
+    { path: '/admin/auth/signup', element: <AdminSignUp /> },
+    { path: '/admin/auth/forgotpassword', element: <AdminForgotPassword /> },
+    { path: '/admin/auth/resetpassword', element: <AdminResetPassword /> },
+    { path: '/user/auth/login', element: <LogIn /> },
+    { path: '/user/auth/signUp', element: <SignUp /> },
+    { path: '/user/auth/forgotpassword', element: <ForgotPassword /> },
+    { path: '/user/auth/resetpassword', element: <ResetPassword /> },
+  ];
+
+  // Protected Admin routes
+  const adminRoutes = [
+    { path: '/admin/dashboard', element: <AdminDashboard /> },
+    { path: '/admin/users', element: <AdminUsers /> },
+    { path: '/admin/subscriptions', element: <AdminSubscriptions /> },
+    { path: '/admin/posts', element: <AdminPosts /> },
+    { path: '/admin/settings', element: <AdminSettings /> },
+  ];
+
+  // Protected User routes
+  const userRoutes = [
+    { path: '/', element: <Home /> },
+    { path: '/user/profile', element: <UserProfile /> },
+    { path: '/user/subscriptions', element: <UserSubscription /> },
+    { path: '/user/myposts', element: <UserPosts /> },
+  ];
+
   return (
     <Router>
       <Routes>
-   
-        {/* Admin Auth */}
-        <Route path="/admin/auth/login" element={
-          <PublicRoute>
-            <AdminLogIn />
-          </PublicRoute>
-        } />
-        <Route path="/admin/auth/signup" element={
-          <PublicRoute>
-            <AdminSignUp />
-          </PublicRoute>
-        } />
-        <Route path="/admin/auth/forgotpassword" element={
-          <PublicRoute>
-            <AdminForgotPassword />
-          </PublicRoute>
-        } />
-        <Route path="/admin/auth/resetpassword" element={
-          <PublicRoute>
-            <AdminResetPassword />
-          </PublicRoute>
-        } />
+        {/* Public Routes */}
+        {publicRoutes.map(({ path, element }, index) => (
+          <Route
+            key={index}
+            path={path}
+            element={<PublicMiddleware>{element}</PublicMiddleware>}
+          />
+        ))}
 
-        {/* User Auth */}
-        <Route path="/user/auth/login" element={
-          <PublicRoute>
-            <LogIn />
-          </PublicRoute>
-        } />
-        <Route path="/user/auth/signUp" element={
-          <PublicRoute>
-            <SignUp />
-          </PublicRoute>
-        } />
-        <Route path="/user/auth/forgotpassword" element={
-          <PublicRoute>
-            <ForgotPassword />
-          </PublicRoute>
-        } />
-        <Route path="/user/auth/resetpassword" element={
-          <PublicRoute>
-            <ResetPassword />
-          </PublicRoute>
-        } />
+        {/* Admin Protected Routes with Layout */}
+        {adminRoutes.map(({ path, element }, index) => (
+          <Route
+            key={index}
+            path={path}
+            element={
+              <AdminMiddleware>
+                <AdminLayout>{element}</AdminLayout>
+              </AdminMiddleware>
+            }
+          />
+        ))}
 
-        {/* Protected Admin Routes */}
-        <Route path="/admin/dashboard" element={
-          <ProtectedRoute>
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin/approval" element={
-          <ProtectedRoute>
-            <AdminApproval />
-          </ProtectedRoute>
-        } />
-
-        {/* Protected User Routes */}
-        <Route path="/user/dashboard" element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        } />
-        <Route path="/user/subscription" element={
-          <ProtectedRoute>
-            <UserSubscription />
-          </ProtectedRoute>
-        } />
+        {/* User Protected Routes with Layout */}
+        {userRoutes.map(({ path, element }, index) => (
+          <Route
+            key={index}
+            path={path}
+            element={
+              <ProtectedMiddleware>
+                <UserLayout>{element}</UserLayout>
+              </ProtectedMiddleware>
+            }
+          />
+        ))}
       </Routes>
     </Router>
   );

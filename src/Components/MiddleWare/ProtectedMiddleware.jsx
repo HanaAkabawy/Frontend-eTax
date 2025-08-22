@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedMiddleware = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token'); // or your auth logic
 
   if (!isAuthenticated) {
@@ -11,4 +11,4 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-export default ProtectedRoute;
+export default ProtectedMiddleware;

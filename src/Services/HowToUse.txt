@@ -1,0 +1,11 @@
+import apiRequest from "./ApiRequest";
+
+// Example: GET request
+apiRequest("GET", "/users")
+  .then((data) => console.log(data))
+  .catch((err) => console.error(err));
+
+// Example: POST request with body and custom headers
+apiRequest("POST", "/login", { email: "test@example.com", password: "1234" }, { "X-Custom-Header": "value" })
+  .then((data) => console.log(data))
+  .catch((err) => console.error(err));

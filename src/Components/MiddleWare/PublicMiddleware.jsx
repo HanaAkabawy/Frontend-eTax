@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const PublicRoute = ({ children }) => {
+const PublicMiddleware = ({ children }) => {
   const token = localStorage.getItem('token'); // check if user is logged in
 
   if (token) {
@@ -13,4 +13,4 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
-export default PublicRoute;
+export default PublicMiddleware;
