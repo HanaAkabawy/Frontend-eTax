@@ -4,13 +4,14 @@ import ProtectedMiddleware from './Components/MiddleWare/ProtectedMiddleware';
 import PublicMiddleware from './Components/MiddleWare/PublicMiddleware';
 import AdminMiddleware from './Components/MiddleWare/AdminMiddleware';
 
+import NotFound from './Pages/NotFound';
+
 // Layouts
 import AdminLayout from './Pages/Admin/AdminLayout';
 import UserLayout from './Pages/User/UserLayout';
 
 // Admin Auth Pages
 import AdminLogIn from './Pages/Admin/Auth/AdminLogIn';
-import AdminSignUp from './Pages/Admin/Auth/AdminSignUp';
 import AdminForgotPassword from './Pages/Admin/Auth/AdminForgotPassword';
 import AdminResetPassword from './Pages/Admin/Auth/AdminResetPassword';
 
@@ -37,7 +38,6 @@ function App() {
   // Public routes
   const publicRoutes = [
     { path: '/admin/auth/login', element: <AdminLogIn /> },
-    { path: '/admin/auth/signup', element: <AdminSignUp /> },
     { path: '/admin/auth/forgotpassword', element: <AdminForgotPassword /> },
     { path: '/admin/auth/resetpassword', element: <AdminResetPassword /> },
     { path: '/user/auth/login', element: <LogIn /> },
@@ -100,6 +100,8 @@ function App() {
             }
           />
         ))}
+
+              <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
