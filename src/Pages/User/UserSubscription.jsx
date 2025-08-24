@@ -27,7 +27,7 @@ const SubscriptionPage = () => {
   const handleBuy = async (planId) => {
     try {
       setBuyingPlanId(planId); // ✅ Show loading on clicked button
-      const response = await apiRequest("POST", "/subscriptions/pay", { plan_id: planId });
+      const response = await apiRequest("POST", "/subscriptions/pay", { subscription_id: planId });
 
       if (response?.payment_url) {
         setPaymentIframeUrl(response.payment_url);

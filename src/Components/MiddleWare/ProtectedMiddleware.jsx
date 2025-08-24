@@ -5,7 +5,7 @@ const ProtectedMiddleware = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token'); // or your auth logic
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/user/auth/login" replace />;
   }
 
   return children;
