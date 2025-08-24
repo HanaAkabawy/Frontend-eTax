@@ -1,6 +1,6 @@
 import React from "react";
 import apiRequest from "../../../Services/ApiRequest";
-import Form from "../../../Components/UI/Form/Form";
+import Form from "../../../Components/Ui/Form/Form";
 
 export default function AdminLogIn() {
   const handleAdminLogin = async (values) => {
