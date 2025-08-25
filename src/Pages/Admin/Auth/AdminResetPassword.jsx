@@ -6,7 +6,7 @@ import apiRequest from "../../../Services/ApiRequest";
 export default function AdminResetPassword() {
   const handleResetPassword = async (values) => {
     try {
-      const res = await apiRequest("POST", "/admin/reset-password", values);
+      const res = await apiRequest("POST", "/reset-password", values);
       alert(res.message || "Password has been reset!");
     } catch (err) {
       alert(err.message || "Reset failed.");

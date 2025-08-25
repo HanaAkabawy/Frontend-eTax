@@ -2,16 +2,24 @@ import React from "react";
 //import Form from "../../Components/Ui/Form/Form";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
+import { useNavigate } from "react-router-dom";
 
 export default function LogIn() {
+  const navigate = useNavigate();
   const handleLogin = async (values) => {
     try {
       const res = await apiRequest("POST", "/login", values);  //calls my Laravel backend at /api/login.
-      localStorage.setItem("userToken", res.token);   //saves the token in the browser so the user stays logged in.
-      alert("User logged in successfully!");
+      localStorage.setItem("token", res.access_token);   //saves the token in the browser so the user stays logged in.
+      localStorage.setItem("user", JSON.stringify(res.user));
+      localStorage.setItem('role',res.user.is_admin?'admin':'user');
+      
+      //navigate to home
+      navigate("/", { replace: true });
     } catch (err) {
-      alert(err.message || "Login failed.");
+      console.log(err.message);
+      alert(err.message || "Admin login failed.");
     }
+
   };
 
   const fields = [   //field to be filled by the user 

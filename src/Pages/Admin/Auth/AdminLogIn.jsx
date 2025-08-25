@@ -1,13 +1,19 @@
 import React from "react";
 import apiRequest from "../../../Services/ApiRequest";
 import Form from "../../../Components/Ui/Form/Form";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminLogIn() {
+  const navigate = useNavigate();
   const handleAdminLogin = async (values) => {
     try {
-      const res = await apiRequest("POST", "/admin/login", values);
-      localStorage.setItem("adminToken", res.token);
-      alert("Admin logged in successfully!");
+      const res = await apiRequest("POST", "/login", values);      
+      localStorage.setItem("token", res.access_token);
+      localStorage.setItem("user", JSON.stringify(res.user));
+      localStorage.setItem('role',res.user.is_admin?'admin':'user');
+      
+      //navigate admin/dashboard
+      navigate("/admin/dashboard", { replace: true });
     } catch (err) {
       alert(err.message || "Admin login failed.");
     }
