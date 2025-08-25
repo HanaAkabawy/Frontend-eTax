@@ -27,7 +27,7 @@ export default function Form({
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    setFormValues({ ...formValues, [e.target.name]:e.target.type === "file" ? e.target.files[0] : e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -81,7 +81,8 @@ export default function Form({
                 type={field.type || "text"}
                 placeholder={field.placeholder}
                 onChange={handleChange}
-                value={formValues[field.name] || ""}
+                {...(field.type !== "file" && { value: formValues[field.name] || "" })}
+                //value={formValues[field.name] || ""}
                 className={cn(
                   "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-3 py-2",
                   field.icon ? "pl-10" : ""
