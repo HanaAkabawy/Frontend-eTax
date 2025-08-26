@@ -25,7 +25,7 @@ export default function SignUp() {
       console.log("after register")
      // Redirect to login with success message from backend
       navigate("/user/auth/login");
-      handleApiSuccess("Registration successful! Your account is pending approval.");
+      handleApiSuccess(res);
         //state: { successMessage: res.message || "Registration successful! Please log in." },
       //});
     } catch (err) {

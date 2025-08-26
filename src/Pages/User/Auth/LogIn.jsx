@@ -1,5 +1,4 @@
-import React from "react";
-//import Form from "../../Components/Ui/Form/Form";
+import { useEffect } from "react";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
 import { useNavigate, useLocation, Link } from "react-router-dom";
@@ -8,7 +7,28 @@ import { handleApiSuccess } from "../../../Utils/ErrorHandler";
 
 
 export default function LogIn() {
+
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
+  const hash = queryParams.get("hash");
+  const expires = queryParams.get("expires");
+  const signature = queryParams.get("signature");
+
+   const verifyEmail = async () => {
+    try {
+      const res = await apiRequest(
+        "GET",
+        `/email/verify/${id}/${hash}?expires=${expires}&signature=${signature}`
+      );
+      handleApiSuccess(res);
+      navigate("/user/auth/login");
+    } catch (err) {
+      handleApiError(err, "Email verification failed!");
+    }
+  };
+
+
   const successMessage = location.state?.successMessage;
   const navigate = useNavigate();
   const handleLogin = async (values) => {
@@ -20,10 +40,9 @@ export default function LogIn() {
       
       //navigate to home
       navigate("/", { replace: true });
-      handleApiSuccess("Success! Redirected to your home page.");
+      handleApiSuccess(res);
       
     } catch (err) {
-  console.log(err);
       handleApiError(err,'Login Failed');
     }
 
@@ -33,6 +52,13 @@ export default function LogIn() {
     { name: "email", label: "Email", type: "email", placeholder: "Enter your email", required: true },
     { name: "password", label: "Password", type: "password", placeholder: "Enter your password", required: true },
   ];
+
+    useEffect(() => {
+      if (id && hash && expires && signature) {
+        verifyEmail();
+      }
+    }
+    , [id, hash, expires, signature]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">

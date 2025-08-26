@@ -8,7 +8,7 @@ export default function AdminForgotPassword() {
   const handleForgotPassword = async (values) => {
     try {
       const res = await apiRequest("POST", "/forgot-password", values);
-      handleApiSuccess("Success! Password Reset email sent.");
+      handleApiSuccess(res);
      
     } catch (err) {
       handleApiError("Failed to send reset email.");

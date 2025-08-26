@@ -16,7 +16,7 @@ export default function AdminResetPassword() {
       values.email=email;
       values.token=token;
       const res = await apiRequest("POST", "/reset-password", values);
-      handleApiSuccess('Password has been reset');
+      handleApiSuccess(res);
     } catch (err) {
       handleApiError(err,'Reset Failed');
     }

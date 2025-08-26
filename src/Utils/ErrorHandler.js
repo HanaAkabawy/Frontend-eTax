@@ -9,6 +9,8 @@ export const handleApiError = (err) => {
     message = err.response.data.message;
   } else if (err.error) {
     message = err.error;
+  } else if (err.message) {
+    message = err.message;
   }
 
   Swal.fire({
@@ -18,7 +20,9 @@ export const handleApiError = (err) => {
     confirmButtonColor: "#3085d6",
   });
 }
-  export const handleApiSuccess = (message) => {
+  export const handleApiSuccess = (res) => {
+    console.log(res);
+    let message = res.message ? res.message : "Sucess";
   Swal.fire({
     icon: "success",
     title: "Success",

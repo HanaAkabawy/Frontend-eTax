@@ -19,11 +19,11 @@ export default function ResetPassword() {
     try {
       values.email=email;
       values.token=token;
-      await apiRequest("POST", "/reset-password", values);  //backend validates the token, updates the password, and logs the user in.
+      const res =await apiRequest("POST", "/reset-password", values);  //backend validates the token, updates the password, and logs the user in.
 
      // Redirect to login with success message from backend
       navigate("/user/auth/login");
-      handleApiSuccess("Success! Please log in with your new password.");
+      handleApiSuccess(res);
         //state: { successMessage: res.message || "Success! Please log in with your new password." },
       //});
     } catch (err) {

@@ -15,7 +15,7 @@ export default function AdminLogIn() {
       
       //navigate admin/dashboard
       navigate("/admin/dashboard", { replace: true });
-      handleApiSuccess("Success! Redirected to your dashboard.");
+      handleApiSuccess(res);
       
     } catch (err) {
       handleApiError("Admin Login Failed");

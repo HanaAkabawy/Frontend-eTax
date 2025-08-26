@@ -10,8 +10,8 @@ import { handleApiSuccess } from "../../../Utils/ErrorHandler";
 export default function ForgotPassword() {
   const handleForgotPassword = async (values) => {
     try {
-      await apiRequest("POST", "/forgot-password", values);  //backend generates a password reset token and emails the reset link.
-      handleApiSuccess("Success! Password reset link sent.");
+      const res= await apiRequest("POST", "/forgot-password", values);  //backend generates a password reset token and emails the reset link.
+      handleApiSuccess(res);
       
     } catch (err) {
       handleApiError(err,'Failed sending the reset link');
