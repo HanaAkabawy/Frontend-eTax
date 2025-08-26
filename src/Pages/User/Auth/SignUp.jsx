@@ -2,34 +2,30 @@ import React from "react";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
 import { useNavigate } from "react-router-dom";
-import { handleApiError } from "../../../Utils/ErrorHandler";
-import { handleApiSuccess } from "../../../Utils/ErrorHandler";
+import { handleApiError, handleApiSuccess } from "../../../Utils/ErrorHandler";
 
 export default function SignUp() {
   const navigate = useNavigate();
+
   const handleSignUp = async (values) => {
     try {
-       const formData = new FormData();
-
+      const formData = new FormData();
       Object.keys(values).forEach((key) => {
-        // console.log(key,values[key]);
         formData.append(key, values[key]);
-        // console.log(formData);
-   
       });
 
       const res = await apiRequest("POST", "/register", formData, {
-          "Content-Type": "multipart/form-data",
-      }); 
+        "Content-Type": "multipart/form-data",
+      });
 
-      console.log("after register")
-     // Redirect to login with success message from backend
-      navigate("/user/auth/login");
       handleApiSuccess(res);
-        //state: { successMessage: res.message || "Registration successful! Please log in." },
-      //});
+      navigate("/user/auth/login", {
+        state: {
+          successMessage: res.message || "Registration successful! Please log in.",
+        },
+      });
     } catch (err) {
-      handleApiError(err,'SignUp failed');
+      handleApiError(err, "SignUp failed");
     }
   };
 
@@ -44,14 +40,31 @@ export default function SignUp() {
   ];
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <Form
-        title="User Sign Up"
-        description="Create your new account"
-        fields={fields}
-        onSubmit={handleSignUp}
-        submitLabel="Register"
-      />
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 p-4">
+      <div className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+          Create Your Account
+        </h2>
+        <p className="text-center text-gray-500 mb-6">
+          Fill in your details to sign up
+        </p>
+
+        <Form
+          fields={fields}
+          onSubmit={handleSignUp}
+          submitLabel="Register"
+        />
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <button
+            onClick={() => navigate("/user/auth/login")}
+            className="text-blue-600 hover:underline font-medium"
+          >
+            Log in
+          </button>
+        </p>
+      </div>
     </div>
   );
 }
