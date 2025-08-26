@@ -1,0 +1,104 @@
+.dashboard-container {
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-title {
+  font-size: 1.6rem; /* professional size */
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #0a1f44; /* dark dark blue */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Card Wrapper */
+.dashboard-card-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Tabs Header */
+.tabs-header {
+  display: flex;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tab-btn {
+  flex: 1; /* split evenly */
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background: #f9fafb;
+  transition: all 0.3s;
+}
+
+.tab-btn.active {
+  background: #0a1f44; /* dark blue active tab */
+  color: white;
+}
+
+/* Analytics Cards */
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.dashboard-card {
+  flex: 1;
+  background: #f5f7fa;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.emoji {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #0a1f44;
+  margin-top: 4px;
+}
+
+/* Charts */
+.dashboard-charts {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.chart-card {
+  flex: 1;
+  background: #f5f7fa;
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 320px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.chart-card h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: #0a1f44;
+}
