@@ -2,31 +2,29 @@ import axios from "axios";
 
 // Create an Axios instance with default config
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api' ,
-  // headers: {
-  //  "Content-Type": "application/json",
-  // },
+  baseURL: 'http://localhost:8000/api',
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-
-const apiRequest = async (method, route, data = {}, customHeaders = {}) => {
-  
+const apiRequest = async (method, route, data = {}, customConfig = {}) => {
   try {
-    console.log(customHeaders);
+    const token = localStorage.getItem("token");
     const isFormData = data instanceof FormData;
-        //  for (let [key, value] of data.entries()) {
-        //   console.log(key, value);
-        // }
+
     const response = await apiClient({
       method,
       url: route,
       data: ["POST", "PUT", "PATCH"].includes(method.toUpperCase()) ? data : undefined,
-      headers: { 
-           "Content-Type": "application/json",
-            ...customHeaders 
+      params: customConfig.params || {}, // ✅ Pass params separately
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
+        ...(customConfig.headers || {}), // ✅ Merge any extra headers
       },
     });
-    console.log(response);
+
     return response.data;
   } catch (error) {
     // console.log(error);
