@@ -21,33 +21,54 @@ export default function UserPosts() {
   if (!post) return <p className="p-6">Loading post...</p>;
 
   return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">
-        {post.user ? `${post.user.name}'s Post` : 'User Post'}
-      </h2>
-      <div className="bg-white shadow-md rounded p-5">
-        <h3 className="text-xl font-semibold">{post.title}</h3>
-        <p className="mt-2 text-gray-700">{post.description}</p>
-        {post.attachments?.map((att, i) => (
-          <div key={i} className="mt-2">
-            {att.path && /\.(jpg|jpeg|png|gif)$/i.test(att.path) && (
-              <img
-                src={`${att.path}`}
-                alt="Attachment"
-                className="max-w-xs rounded shadow mb-2"
-                style={{ maxHeight: 200 }}
-              />
-            )}
-            <a
-              href={`${att.path || att}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-500 block"
-            >
-              📎 View Attachment
-            </a>
+    <div className="min-h-screen w-full">
+      <div className="container mx-auto p-6 max-w-3xl">
+        <h2 className="text-3xl font-bold mb-7 text-center">
+          {post.user ? `${post.user.name}'s Post` : 'User Post'}
+        </h2>
+        <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col transition hover:shadow-2xl mx-auto w-full max-w-3xl">
+          {/* Image Preview */}
+          {post.attachments?.length > 0 && post.attachments[0].path && /\.(jpg|jpeg|png|gif)$/i.test(post.attachments[0].path) && (
+            <img
+              src={`${post.attachments[0].path}`}
+              alt="Attachment"
+              className="w-full h-56 object-cover"
+            />
+          )}
+          <div className="p-6 flex flex-col flex-1">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">{post.title}</h3>
+            <p className="text-gray-700 mb-3">{post.description}</p>
+            <div className="flex items-center mb-2">
+              <span className="text-sm text-gray-500 mr-2">
+                <strong>By:</strong> {post.author ? post.author.name : "Unknown"}
+              </span>
+              <span className="text-xs text-gray-400">
+                • <strong>Created at:</strong> {post.created_at ? new Date(post.created_at).toLocaleDateString() : ""}
+              </span>
+            </div>
+            {post.attachments?.map((att, i) => (
+              <a
+                key={i}
+                href={`${att.path || att}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 hover:underline flex items-center mb-2"
+              >
+                <span className="mr-1">📎</span> View Attachment
+              </a>
+            ))}
+            <div className="flex justify-between text-sm text-gray-600 mt-4 border-t pt-3">
+              <div className="flex items-center space-x-2">
+                <span>👍</span>
+                <span>12 Likes</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span>💬</span>
+                <span>3 Comments</span>
+              </div>
+            </div>
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

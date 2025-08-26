@@ -13,68 +13,63 @@ export default function MyPosts() {
   }, []);
 
   return (
-    <div className="bg-gray-100 min-h-screen py-8">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6 px-4">My Posts</h2>
+    <div className="min-h-screen w-full">
+      <div className="container mx-auto p-6 max-w-3xl">
+        <h2 className="text-3xl font-bold mb-7 text-center">My Posts</h2>
 
         {posts.length === 0 ? (
-          <p className="text-gray-600 px-4">No posts yet.</p>
+          <p className="text-gray-600 text-center">No posts yet.</p>
         ) : (
-          posts.map((post) => (
-            <div key={post.id} className="bg-white rounded-lg shadow-md mb-6 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full font-bold text-lg">
-                    {post.user?.name?.charAt(0) || 'U'}
+          <div className="flex flex-col gap-8">
+            {posts.map((post) => (
+              <div
+                key={post.id}
+                className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col transition hover:shadow-2xl mx-auto w-full max-w-3xl"
+              >
+                {/* Image Preview */}
+                {post.attachments?.length > 0 && post.attachments[0].path && /\.(jpg|jpeg|png|gif)$/i.test(post.attachments[0].path) && (
+                  <img
+                    src={`${post.attachments[0].path}`}
+                    alt="Attachment"
+                    className="w-full h-56 object-cover"
+                  />
+                )}
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">{post.title}</h3>
+                  <p className="text-gray-700 mb-3">{post.description}</p>
+                  <div className="flex items-center mb-2">
+                    <span className="text-sm text-gray-500 mr-2">
+                      <strong>By:</strong> {post.user?.name || "You"}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      • <strong>Created at:</strong> {post.created_at ? new Date(post.created_at).toLocaleDateString() : ""}
+                    </span>
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-800">{post.user?.name || "You"}</p>
-                    <p className="text-sm text-gray-500">Posted just now</p>
-                  </div>
-                </div>
-              </div>
-
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{post.title}</h3>
-              <p className="text-gray-700 mb-3">{post.description}</p>
-
-              {post.attachments?.length > 0 && (
-                <div className="mb-3">
-                  {post.attachments.map((att, i) => (
-                    <div>
-                        {att.path && /\.(jpg|jpeg|png|gif)$/i.test(att.path) && (
-                            <img
-                                src={`${att.path}`}
-                                alt="Attachment"
-                                className="max-w-xs rounded shadow mb-2"
-                                style={{ maxHeight: 200 }}
-                            />
-                        )}
-                        <a
-                        key={i}
-                        href={`${att.path}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-600 hover:underline block"
-                        >
-                        📎 View Attachment
-                        </a>
-                     </div>
+                  {post.attachments?.map((att, i) => (
+                    <a
+                      key={i}
+                      href={`${att.path}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-600 hover:underline flex items-center mb-2"
+                    >
+                      <span className="mr-1">📎</span> View Attachment
+                    </a>
                   ))}
-                </div>
-              )}
-
-              <div className="flex justify-between text-sm text-gray-600 mt-4 border-t pt-3">
-                <div className="flex items-center space-x-2">
-                  <span>👍</span>
-                  <span>12 Likes</span> {/* Placeholder static number */}
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span>💬</span>
-                  <span>3 Comments</span> {/* Placeholder static number */}
+                  <div className="flex justify-between text-sm text-gray-600 mt-4 border-t pt-3">
+                    <div className="flex items-center space-x-2">
+                      <span>👍</span>
+                      <span>12 Likes</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span>💬</span>
+                      <span>3 Comments</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
