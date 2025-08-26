@@ -17,6 +17,7 @@ const apiRequest = async (method, route, data = {}, customHeaders = {}) => {
       data: ["POST", "PUT", "PATCH"].includes(method.toUpperCase()) ? data : undefined,
       headers: { ...customHeaders },
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("API Request Error:", error.response?.data || error.message);

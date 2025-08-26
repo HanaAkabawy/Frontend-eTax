@@ -9,12 +9,10 @@ export const getSettings = () => {
 export const createSetting = (data) => {
   return apiRequest("POST", "/settings", data);
 };
-
-// Update an existing setting
+// Update a setting by ID
 export const updateSetting = (id, data) => {
   return apiRequest("PUT", `/settings/${id}`, data);
 };
-
 // Delete a setting
 export const deleteSetting = (id) => {
   return apiRequest("DELETE", `/settings/${id}`);
