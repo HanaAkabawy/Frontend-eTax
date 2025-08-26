@@ -21,21 +21,47 @@ export default function CreatePost() {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      alert('Post created successfully! ✅ ');
+      alert('Post created successfully! ✅');
     } catch (error) {
       alert('Failed to create post ❌');
     }
   };
 
-  return (
-    <div className="container">
-      <h2>Create Post</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="title" placeholder="Title" onChange={handleChange} required />
-        <textarea name="description" placeholder="Description" onChange={handleChange} required />
-        <input type="file" onChange={handleFileChange} />
-        <button type="submit">Create</button>
+return (  
+  <div className="bg-gray-100 min-h-screen p-4">
+    <div className="max-w-xl mx-auto bg-white shadow-md rounded-lg p-6">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">Create Post</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          name="title"
+          placeholder="What's on your mind?"
+          onChange={handleChange}
+          required
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        <textarea
+          name="description"
+          placeholder="Write something..."
+          onChange={handleChange}
+          required
+          className="w-full p-3 border border-gray-300 rounded-lg resize-none h-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        <div>
+          <label className="block mb-1 text-sm font-medium text-gray-600">Attach File</label>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+        >
+          Post
+        </button>
       </form>
     </div>
-  );
+  </div>
+);
 }
