@@ -3,7 +3,12 @@ import React from "react";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { handleApiError, handleApiSuccess } from "../../../Utils/ErrorHandler";
+
+
 export default function ResetPassword() {
+  const navigate = useNavigate();
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
 
@@ -14,10 +19,15 @@ export default function ResetPassword() {
     try {
       values.email=email;
       values.token=token;
-      await apiRequest("POST", "/reset-password", values);  //backend validates the token, updates the password, and logs the user in.
-      alert("Password reset successful!");
+      const res =await apiRequest("POST", "/reset-password", values);  //backend validates the token, updates the password, and logs the user in.
+
+     // Redirect to login with success message from backend
+      navigate("/user/auth/login");
+      handleApiSuccess(res);
+        //state: { successMessage: res.message || "Success! Please log in with your new password." },
+      //});
     } catch (err) {
-      alert(err.message || "Reset failed.");
+     handleApiError(err, 'Reset password failed');
     }
   };
 

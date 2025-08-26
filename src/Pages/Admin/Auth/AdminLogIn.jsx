@@ -1,7 +1,8 @@
 import React from "react";
 import apiRequest from "../../../Services/ApiRequest";
 import Form from "../../../Components/Ui/Form/Form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
+import { handleApiError, handleApiSuccess } from "../../../Utils/ErrorHandler";
 
 export default function AdminLogIn() {
   const navigate = useNavigate();
@@ -14,8 +15,10 @@ export default function AdminLogIn() {
       
       //navigate admin/dashboard
       navigate("/admin/dashboard", { replace: true });
+      handleApiSuccess(res);
+      
     } catch (err) {
-      alert(err.message || "Admin login failed.");
+      handleApiError("Admin Login Failed");
     }
   };
 
@@ -25,7 +28,7 @@ export default function AdminLogIn() {
   ];
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <Form
         title="Admin Login"
         description="Sign in to admin dashboard"
@@ -33,6 +36,12 @@ export default function AdminLogIn() {
         onSubmit={handleAdminLogin}
         submitLabel="Login"
       />
-    </div>
+      {/* Links BELOW the form so they don’t interfere with submit */}
+      <div className="mt-4 flex flex-col items-center space-y-2">
+          <Link to="/admin/auth/forgotpassword" className="text-sm text-blue-600 hover:underline"
+>Forgot Password?</Link>
+
+        </div>
+      </div>
   );
 }
