@@ -2,15 +2,19 @@ import React from "react";
 //import Form from "../../Components/Ui/Form/Form";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
+import { handleApiError } from "../../../Utils/ErrorHandler";
+import { handleApiSuccess } from "../../../Utils/ErrorHandler";
+   
 
 
 export default function ForgotPassword() {
   const handleForgotPassword = async (values) => {
     try {
       await apiRequest("POST", "/forgot-password", values);  //backend generates a password reset token and emails the reset link.
-      alert("Password reset link sent!");
+      handleApiSuccess("Success! Password reset link sent.");
+      
     } catch (err) {
-      alert(err.message || "Failed to send reset link.");
+      handleApiError(err,'Failed sending the reset link');
     }
   };
 

@@ -2,14 +2,16 @@ import React from "react";
 //import Form from "../../Components/Ui/Form/Form";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
+import { handleApiError, handleApiSuccess } from "../../../Utils/ErrorHandler";
 
 export default function AdminForgotPassword() {
   const handleForgotPassword = async (values) => {
     try {
       const res = await apiRequest("POST", "/forgot-password", values);
-      alert(res.message || "Password reset email sent!");
+      handleApiSuccess("Success! Password Reset email sent.");
+     
     } catch (err) {
-      alert(err.message || "Failed to send reset email.");
+      handleApiError("Failed to send reset email.");
     }
   };
 

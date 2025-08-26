@@ -2,20 +2,27 @@ import React from "react";
 //import Form from "../../Components/Ui/Form/Form";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
+import { useLocation } from "react-router-dom";
+import { handleApiError, handleApiSuccess } from "../../../Utils/ErrorHandler";
 
 export default function AdminResetPassword() {
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const token = queryParams.get("token");
+  const email = queryParams.get("email"); 
+
   const handleResetPassword = async (values) => {
     try {
+      values.email=email;
+      values.token=token;
       const res = await apiRequest("POST", "/reset-password", values);
-      alert(res.message || "Password has been reset!");
+      handleApiSuccess('Password has been reset');
     } catch (err) {
-      alert(err.message || "Reset failed.");
+      handleApiError(err,'Reset Failed');
     }
   };
 
   const fields = [
-    { name: "token", label: "Reset Token", type: "text", placeholder: "Paste the token you received", required: true },
-    { name: "email", label: "Admin Email", type: "email", placeholder: "Enter your email", required: true },
     { name: "password", label: "New Password", type: "password", placeholder: "Enter new password", required: true },
     { name: "password_confirmation", label: "Confirm Password", type: "password", placeholder: "Re-enter new password", required: true },
   ];

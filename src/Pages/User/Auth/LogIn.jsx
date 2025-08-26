@@ -2,9 +2,14 @@ import React from "react";
 //import Form from "../../Components/Ui/Form/Form";
 import Form from "../../../Components/Ui/Form/Form";
 import apiRequest from "../../../Services/ApiRequest";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { handleApiError } from "../../../Utils/ErrorHandler";
+import { handleApiSuccess } from "../../../Utils/ErrorHandler";
+
 
 export default function LogIn() {
+  const location = useLocation();
+  const successMessage = location.state?.successMessage;
   const navigate = useNavigate();
   const handleLogin = async (values) => {
     try {
@@ -15,9 +20,11 @@ export default function LogIn() {
       
       //navigate to home
       navigate("/", { replace: true });
+      handleApiSuccess("Success! Redirected to your home page.");
+      
     } catch (err) {
-      console.log(err.message);
-      alert(err.message || "Admin login failed.");
+  console.log(err);
+      handleApiError(err,'Login Failed');
     }
 
   };
@@ -28,7 +35,14 @@ export default function LogIn() {
   ];
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      {/* Success message */}
+      {successMessage && (
+        <div className="mb-4 p-3 bg-green-200 text-green-800 rounded shadow">
+          {successMessage}
+        </div>
+      )}
+      {/* Login form */}
       <Form
         title="User Login"
         description="Access your account"
@@ -36,6 +50,25 @@ export default function LogIn() {
         onSubmit={handleLogin}
         submitLabel="Login"
       />
+
+      {/* Extra links */}
+      <div className="mt-4 flex flex-col items-center space-y-2">
+        {/* Forgot password link */}
+        <Link
+          to="/user/auth/forgotpassword"
+          className="text-sm text-blue-600 hover:underline"
+        >
+          Forgot Password?
+        </Link>
+
+        {/* Sign Up button */}
+        <button
+          onClick={() => navigate("/user/auth/signUp")}
+          className="mt-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Create New Account
+        </button>
+      </div>
     </div>
   );
 }
