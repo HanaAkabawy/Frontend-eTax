@@ -44,7 +44,7 @@ export default function Home() {
             <h3 className="text-xl font-semibold">{post.title}</h3>
             <p className="mt-2 text-gray-700">{post.description}</p>
             <p className="text-sm text-gray-500 mt-1">
-              <strong>By:</strong> {post.user ? post.user.name : "Unknown"}
+              <strong>By:</strong> {post.author ? post.author.name : "Unknown"}
             </p>
             {post.attachments?.map((att, i) => (
               <div key={i} className="mt-2">
@@ -58,7 +58,7 @@ export default function Home() {
                   />
                 )}
                 <a
-                  href={`${att.path || att}`}
+                  href={`${att.path}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-500 block"

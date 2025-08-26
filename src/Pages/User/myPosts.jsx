@@ -40,15 +40,25 @@ export default function MyPosts() {
               {post.attachments?.length > 0 && (
                 <div className="mb-3">
                   {post.attachments.map((att, i) => (
-                    <a
-                      key={i}
-                      href={`${att}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-600 hover:underline block"
-                    >
-                      📎 View Attachment
-                    </a>
+                    <div>
+                        {att.path && /\.(jpg|jpeg|png|gif)$/i.test(att.path) && (
+                            <img
+                                src={`${att.path}`}
+                                alt="Attachment"
+                                className="max-w-xs rounded shadow mb-2"
+                                style={{ maxHeight: 200 }}
+                            />
+                        )}
+                        <a
+                        key={i}
+                        href={`${att.path}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-blue-600 hover:underline block"
+                        >
+                        📎 View Attachment
+                        </a>
+                     </div>
                   ))}
                 </div>
               )}
