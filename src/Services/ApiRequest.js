@@ -4,18 +4,22 @@ import axios from "axios";
 const apiClient = axios.create({
   baseURL: 'http://localhost:8000/api' ,
   headers: {
-    "Content-Type": "application/json",
+   "Content-Type": "application/json",
   },
 });
 
 
 const apiRequest = async (method, route, data = {}, customHeaders = {}) => {
+  
   try {
+    const isFormData = data instanceof FormData;
     const response = await apiClient({
       method,
       url: route,
       data: ["POST", "PUT", "PATCH"].includes(method.toUpperCase()) ? data : undefined,
-      headers: { ...customHeaders },
+      headers: { 
+        ...customHeaders 
+      },
     });
     console.log(response);
     return response.data;

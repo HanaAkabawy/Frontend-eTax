@@ -1,6 +1,6 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { NavLink, Link } from "react-router-dom";
+import { LogOut, PlusCircle } from "lucide-react";
 import Button from "../Ui/Button/Button";
 
 const Navbar = ({ name, onLogout }) => {
@@ -35,6 +35,18 @@ const Navbar = ({ name, onLogout }) => {
               </NavLink>
             </li>
           ))}
+            {/* Create Post Button */}
+          <li>
+            <Link to="/user/create">
+              <Button
+                variant="primary"
+                size="sm"
+                leftIcon={<PlusCircle className="w-5 h-5" />}
+              >
+                Create Post
+              </Button>
+            </Link>
+          </li>
         </ul>
 
         {/* Right: Logout Button */}

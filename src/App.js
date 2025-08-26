@@ -30,9 +30,12 @@ import AdminSettings from './Pages/Admin/AdminSettings';
 
 // User Protected Pages
 import Home from './Pages/User/Home';
+import CreatePost from './Pages/User/CreatePost';
+import MyPosts from './Pages/User/myPosts';
+import UserPosts from './Pages/User/UserPosts';
 import UserSubscription from './Pages/User/UserSubscription';
 import UserProfile from './Pages/User/UserProfile';
-import UserPosts from './Pages/User/UserPosts';
+
 
 function App() {
   // Public routes
@@ -55,12 +58,14 @@ function App() {
     { path: '/admin/settings', element: <AdminSettings /> },
   ];
 
-  // Protected User routes
+   // ✅ Updated Protected User Routes - 
   const userRoutes = [
-    { path: '/', element: <Home /> },
-    { path: '/user/profile', element: <UserProfile /> },
-    { path: '/user/subscriptions', element: <UserSubscription /> },
-    { path: '/user/myposts', element: <UserPosts /> },
+    { path: '/', element: <Home /> }, // View all posts
+    { path: '/user/create', element: <CreatePost /> }, // Create a new post
+    { path: '/user/myposts', element: <MyPosts /> }, // View current user's own posts
+    { path: '/user/post/:id', element: <UserPosts /> }, // View another user's posts by ID
+    { path: '/user/profile', element: <UserProfile /> }, // User profile
+    { path: '/user/subscriptions', element: <UserSubscription /> }, // Subscriptions 
   ];
 
   return (
