@@ -19,8 +19,15 @@ export default function UserProfile() {
     new_password_confirmation: "",
   });
 
+  // ✅ Grab token from localStorage
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
-    getProfile()
+    getProfile({
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (res.status && res.data) {
           setProfile(res.data);
@@ -40,7 +47,7 @@ export default function UserProfile() {
         });
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   if (loading) {
     return <div className="profile-card">Loading...</div>;
@@ -58,10 +65,14 @@ export default function UserProfile() {
   const nationalIdImage =
     profile.attachments?.find((a) => a.category === "national_id")?.url || null;
 
-  // ✅ Submit handler with proper error message handling
+  // ✅ Submit handler with token in headers
   const handleUpdate = (e) => {
     e.preventDefault();
-    updateProfile(formData)
+    updateProfile(formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (res.status && res.data) {
           setProfile(res.data);
@@ -79,18 +90,12 @@ export default function UserProfile() {
         let errorMessage = "An error occurred while updating your profile.";
         console.log(err.message);
 
-
-        // if (err.response?.data) {
-          // Laravel validation errors
-          if (err.response) {
-            const errors = Object.values(err.response.data.errors).flat();
-            errorMessage = errors.join("\n");
-          }
-          // Laravel general error message
-          else if (err.message) {
-            errorMessage = err.message;
-          }
-        // }
+        if (err.response) {
+          const errors = Object.values(err.response.data.errors).flat();
+          errorMessage = errors.join("\n");
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
 
         Swal.fire({
           icon: "error",

@@ -1,18 +1,19 @@
 import apiRequest from "./ApiRequest";
 
-// Fetch user profile (id = 7 for now)
-export const getProfile = () => {
-  return apiRequest("GET", "/profile/7");
+// Fetch logged-in user profile
+export const getProfile = (config = {}) => {
+  return apiRequest("GET", "/profile", null, config);
 };
 
-// Update user profile (name, email, password, etc.)
-export const updateProfile = (data) => {
-  return apiRequest("PUT", "/profile/7", data);
+// Update logged-in user profile (name, email, password, etc.)
+export const updateProfile = (data, config = {}) => {
+  return apiRequest("PUT", "/profile", data, config);
 };
 
 // Upload / update profile picture
-export const updateProfilePicture = (data) => {
-  return apiRequest("PUT", "/profile/7", data, {
+export const updateProfilePicture = (data, config = {}) => {
+  return apiRequest("PUT", "/profile", data, {
+    ...config,
     "Content-Type": "multipart/form-data",
   });
 };
