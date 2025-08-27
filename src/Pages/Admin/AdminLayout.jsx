@@ -27,7 +27,7 @@ const AdminLayout = ({ children }) => {
   };
 
   useEffect(() => {
-    const userData = localStorage.getItem("user"); // assuming you store user as JSON
+    const userData = localStorage.getItem("user"); 
     if (userData) {
       try {
         const user = JSON.parse(userData);
