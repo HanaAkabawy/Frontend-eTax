@@ -1,35 +1,92 @@
 import React, { useEffect, useState } from "react";
-import apiRequest from "../../Services/ApiRequest";
+import apiRequest from "../../Services/ApiRequest"; 
 import "./AdminSubscriptions.css";
 
-function AdminSubscriptions() {
+// normalize backend values into true/false
+const toBool = (v) => v === true || v === 1 || v === "1";
+
+const normalizePlan = (p) => ({
+  ...p,
+  is_active: toBool(p?.is_active),
+});
+
+export default function AdminSubscriptions() {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
+  const [editingPlan, setEditingPlan] = useState(null);
   const [formData, setFormData] = useState({
-    id: null,
     name: "",
     cost: "",
     no_of_posts: "",
     is_active: false,
   });
 
-  // GET all subscriptions
+  // new state for delete confirmation
+  const [deleteConfirm, setDeleteConfirm] = useState({ show: false, id: null });
+
+  // ---- API ----
   const fetchSubscriptions = async () => {
     try {
-      const response = await apiRequest("GET", "/adminSubscription");
-      setSubscriptions(response.data);
-    } catch (err) {
-      setError("Failed to fetch subscriptions");
+      setLoading(true);
+      const res = await apiRequest("GET", "/adminSubscription");
+      const list = Array.isArray(res?.data) ? res.data.map(normalizePlan) : [];
+      setSubscriptions(list);
+    } catch (e) {
+      console.error("Failed to fetch subscriptions:", e);
+      setSubscriptions([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle form input
+  const savePlan = async (payload, id = null) => {
+    const body = {
+      ...payload,
+      cost: payload.cost === "" ? "" : Number(payload.cost),
+      no_of_posts:
+        payload.no_of_posts === "" || payload.no_of_posts === null
+          ? ""
+          : Number(payload.no_of_posts),
+      is_active: payload.is_active ? 1 : 0,
+    };
+    if (id) {
+      return apiRequest("PUT", `/adminSubscription/${id}`, body);
+    }
+    return apiRequest("POST", "/adminSubscription", body);
+  };
+
+  const deletePlan = (id) =>
+    apiRequest("DELETE", `/adminSubscription/${id}`);
+
+  // ---- UI handlers ----
+  useEffect(() => {
+    fetchSubscriptions();
+  }, []);
+
+  const openAddModal = () => {
+    setEditingPlan(null);
+    setFormData({
+      name: "",
+      cost: "",
+      no_of_posts: "",
+      is_active: false,
+    });
+    setShowModal(true);
+  };
+
+  const openEditModal = (plan) => {
+    setEditingPlan(plan);
+    setFormData({
+      name: plan.name ?? "",
+      cost: plan.cost ?? "",
+      no_of_posts: plan.no_of_posts ?? "",
+      is_active: toBool(plan.is_active),
+    });
+    setShowModal(true);
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -38,134 +95,186 @@ function AdminSubscriptions() {
     }));
   };
 
-  // Open modal for Add
-  const openAddModal = () => {
-    setEditMode(false);
-    setFormData({ id: null, name: "", cost: "", no_of_posts: "", is_active: false });
-    setShowModal(true);
-  };
-
-  // Open modal for Edit
-  const openEditModal = (plan) => {
-    setEditMode(true);
-    setFormData(plan);
-    setShowModal(true);
-  };
-
-  // Submit form (Add or Edit)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (editMode) {
-        await apiRequest("PUT", `/adminSubscription/${formData.id}`, formData);
-        alert("Plan updated!");
-      } else {
-        await apiRequest("POST", "/adminSubscription", formData);
-        alert("New plan added!");
-      }
+      await savePlan(formData, editingPlan?.id || null);
       setShowModal(false);
       fetchSubscriptions();
-    } catch (err) {
-      console.error("Error submitting form:", err);
+    } catch (e) {
+      console.error("Error saving plan:", e);
     }
   };
 
-  // DELETE subscription
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this plan?")) return;
+  // open confirm modal instead of direct delete
+  const handleDelete = (id) => {
+    setDeleteConfirm({ show: true, id });
+  };
+
+  const confirmDelete = async () => {
     try {
-      await apiRequest("DELETE", `/adminSubscription/${id}`);
-      setSubscriptions((prev) => prev.filter((plan) => plan.id !== id));
-    } catch (err) {
-      console.error("Error deleting subscription:", err);
+      await deletePlan(deleteConfirm.id);
+      setSubscriptions((prev) => prev.filter((p) => p.id !== deleteConfirm.id));
+    } catch (e) {
+      console.error("Error deleting plan:", e);
+    } finally {
+      setDeleteConfirm({ show: false, id: null });
     }
   };
 
-  // View subscription
-  const handleView = async (id) => {
+  const togglePlan = async (id) => {
+    return apiRequest("PATCH",`/adminSubscription/${id}/toggle`);
+  };
+
+  const toggleActive = async (plan) => {
+    const next = !toBool(plan.is_active);
     try {
-      const res = await apiRequest("GET", `/adminSubscription/${id}`);
-      alert(JSON.stringify(res.data, null, 2));
-    } catch (err) {
-      console.error("Error viewing subscription:", err);
+      await togglePlan(plan.id);
+      setSubscriptions((prev) =>
+        prev.map((p) => (p.id === plan.id ? { ...p, is_active: next } : p))
+      );
+    } catch (e) {
+      console.error("Error toggling status:", e);
     }
   };
 
-  useEffect(() => {
-    fetchSubscriptions();
-  }, []);
-
-  if (loading) return <p>Loading subscriptions...</p>;
-  if (error) return <p>{error}</p>;
-
+  // ---- render ----
   return (
     <div className="subscriptions-container">
       <div className="header-row">
-        <h2 className="subscriptions-title">Subscriptions</h2>
-        <button className="btn add" onClick={openAddModal}>+ New Plan</button>
+        <h2 className="subscriptions-title">Subscription Plans</h2>
+        <button className="btn new-plan" onClick={openAddModal}>
+          + New Plan
+        </button>
       </div>
 
-      <table className="subscriptions-table">
-        <thead>
-          <tr>
-            <th>Plan ID</th>
-            <th>Plan Name</th>
-            <th>Plan Cost</th>
-            <th>No Plan Posts</th>
-            <th>Plan Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subscriptions.map((plan) => (
-            <tr key={plan.id}>
-              <td>{plan.id}</td>
-              <td>{plan.name}</td>
-              <td>{plan.cost}</td>
-              <td>{plan.no_of_posts}</td>
-              <td>{plan.is_active ? "Active" : "Inactive"}</td>
-              <td className="action-buttons">
-                {/* <button className="btn view" onClick={() => handleView(plan.id)}>View</button> */}
-                <button className="btn edit" onClick={() => openEditModal(plan)}>Edit</button>
-                <button className="btn delete" onClick={() => handleDelete(plan.id)}>Delete</button>
-              </td>
+      {loading ? (
+        <p>Loading…</p>
+      ) : (
+        <table className="subscriptions-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Cost</th>
+              <th>No. of Posts</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {subscriptions.length ? (
+              subscriptions.map((plan) => (
+                <tr key={plan.id}>
+                  <td>{plan.name}</td>
+                  <td>{plan.cost}</td>
+                  <td>{plan.no_of_posts}</td>
+                  <td>
+                    <button
+                      className={`btn ${toBool(plan.is_active) ? "active" : "inactive"}`}
+                      onClick={() => toggleActive(plan)}
+                    >
+                      {toBool(plan.is_active) ? "Active" : "Inactive"}
+                    </button>
+                  </td>
+                  <td className="action-buttons">
+                    <button className="btn edit" onClick={() => openEditModal(plan)}>
+                      Edit
+                    </button>
+                    <button className="btn delete" onClick={() => handleDelete(plan.id)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" style={{ textAlign: "center" }}>
+                  No subscription plans found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
 
-      {/* Modal for Add/Edit */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>{editMode ? "Edit Plan" : "Add New Plan"}</h3>
+            <h3>{editingPlan ? "Edit Plan" : "Add New Plan"}</h3>
             <form onSubmit={handleSubmit}>
               <label>
                 Name:
-                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
               </label>
               <label>
                 Cost:
-                <input type="number" name="cost" value={formData.cost} onChange={handleChange} required />
+                <input
+                  type="number"
+                  name="cost"
+                  value={formData.cost}
+                  onChange={handleChange}
+                  required
+                />
               </label>
               <label>
                 No. of Posts:
-                <input type="number" name="no_of_posts" value={formData.no_of_posts} onChange={handleChange} />
+                <input
+                  type="number"
+                  name="no_of_posts"
+                  value={formData.no_of_posts}
+                  onChange={handleChange}
+                />
               </label>
               <label className="checkbox">
-                <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} />
+                <input
+                  type="checkbox"
+                  name="is_active"
+                  checked={!!formData.is_active}
+                  onChange={handleChange}
+                />
                 Active
               </label>
               <div className="modal-actions">
-                <button type="submit" className="btn save">{editMode ? "Update" : "Add"}</button>
-                <button type="button" className="btn cancel" onClick={() => setShowModal(false)}>Cancel</button>
+                <button type="submit" className="btn save">
+                  {editingPlan ? "Update" : "Add"}
+                </button>
+                <button
+                  type="button"
+                  className="btn cancel"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* delete confirmation modal */}
+      {deleteConfirm.show && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this plan?</p>
+            <div className="modal-actions">
+              <button className="btn delete" onClick={confirmDelete}>Yes</button>
+              <button
+                className="btn cancel"
+                onClick={() => setDeleteConfirm({ show: false, id: null })}
+              >
+                No
+              </button>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
 }
-
-export default AdminSubscriptions;
