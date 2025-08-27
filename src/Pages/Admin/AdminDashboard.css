@@ -1,12 +1,12 @@
 .dashboard-container {
-  padding: 30px;
+  padding: 20px 30px; /* shifted upward by reducing top/bottom padding */
   font-family: Arial, sans-serif;
 }
 
 .dashboard-title {
   font-size: 1.6rem; /* professional size */
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 12px; /* less margin to move upward */
   color: #0a1f44; /* dark dark blue */
   display: flex;
   align-items: center;
@@ -30,7 +30,7 @@
 
 .tab-btn {
   flex: 1; /* split evenly */
-  padding: 12px 0;
+  padding: 10px 0; /* slightly less vertical padding */
   font-size: 1rem;
   font-weight: 600;
   text-align: center;
@@ -48,8 +48,8 @@
 /* Analytics Cards */
 .dashboard-cards {
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  gap: 12px; /* slightly closer */
+  padding: 12px 20px; /* reduced top/bottom padding */
   justify-content: space-between;
 }
 
@@ -57,14 +57,14 @@
   flex: 1;
   background: #f5f7fa;
   border-radius: 10px;
-  padding: 20px;
+  padding: 16px; /* slightly smaller padding */
   text-align: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .emoji {
   font-size: 1.6rem;
-  margin-bottom: 8px;
+  margin-bottom: 6px; /* reduce gap */
 }
 
 .card-title {
@@ -77,14 +77,14 @@
   font-size: 1.4rem;
   font-weight: bold;
   color: #0a1f44;
-  margin-top: 4px;
+  margin-top: 2px; /* reduce spacing */
 }
 
 /* Charts */
 .dashboard-charts {
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  gap: 12px; /* reduce horizontal gap */
+  padding: 12px 20px; /* reduced top/bottom padding */
   flex-wrap: wrap;
 }
 
@@ -92,13 +92,13 @@
   flex: 1;
   background: #f5f7fa;
   border-radius: 10px;
-  padding: 15px;
+  padding: 12px 15px; /* reduced internal padding */
   min-width: 320px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .chart-card h3 {
   font-size: 1rem;
-  margin-bottom: 12px;
+  margin-bottom: 10px; /* less margin to move charts upward */
   color: #0a1f44;
 }

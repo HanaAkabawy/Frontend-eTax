@@ -24,9 +24,9 @@ export default function UserProfile() {
 
   useEffect(() => {
     getProfile({
-      headers: {
+      
         Authorization: `Bearer ${token}`,
-      },
+      
     })
       .then((res) => {
         if (res.status && res.data) {
@@ -69,9 +69,9 @@ export default function UserProfile() {
   const handleUpdate = (e) => {
     e.preventDefault();
     updateProfile(formData, {
-      headers: {
+      
         Authorization: `Bearer ${token}`,
-      },
+      
     })
       .then((res) => {
         if (res.status && res.data) {

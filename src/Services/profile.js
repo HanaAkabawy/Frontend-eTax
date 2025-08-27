@@ -1,7 +1,8 @@
 import apiRequest from "./ApiRequest";
 
 // Fetch logged-in user profile
-export const getProfile = (config = {}) => {
+export const getProfile = (config = {}) => { 
+  console.log(config);
   return apiRequest("GET", "/profile", null, config);
 };
 

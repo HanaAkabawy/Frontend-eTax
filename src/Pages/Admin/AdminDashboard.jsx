@@ -98,7 +98,7 @@ const AdminDashboard = () => {
                   <BarChart data={revenueData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="plan" />
-                    <YAxis />
+                    <YAxis allowDecimals={false} /> {/* <-- integer only */}
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="users" fill="#0088FE" />
